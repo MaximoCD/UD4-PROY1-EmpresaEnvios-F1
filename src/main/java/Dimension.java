@@ -2,13 +2,15 @@
  * Medidas exteriores de un paquete, en centímetros.
  * No tiene métodos para modificar las medidas: una vez creada no cambia.
  *
- * @author
+ * @author Maxi
  */
 public class Dimension {
 
     private double alto;
     private double ancho;
     private double largo;
+
+
 
     /**
      * Crea una dimensión con las medidas indicadas (en cm).
@@ -31,8 +33,16 @@ public class Dimension {
         return largo;
     }
 
-    // DECISIÓN DE DISEÑO (ver enunciado): si decides que el volumen lo
-    // calcula Dimension, añade aquí el método.
+
+
+    // DECISIÓN DE DISEÑO: el volumen lo calcula Dimension porque es el objeto
+    // que conoce las tres medidas. Así Paquete solo llama a un método y, si otra
+    // clase necesita el volumen, no hay que repetir la multiplicación.
+    public double calcularVolumen() {
+        return (alto * ancho * largo);
+    }
+
+
 
     /**
      * @return las medidas con el formato "40.0 x 30.0 x 50.0 cm"
