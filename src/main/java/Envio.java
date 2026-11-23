@@ -8,9 +8,15 @@
  */
 public class Envio {
 
-    // TODO constante de clase MAX_PAQUETES (ver enunciado)
+    // DECISIÓN DE DISEÑO: private es la visibilidad más restrictiva y el programa
+    // funciona igual, porque solo se usa dentro de Envio.
+    private static final int MAX_PAQUETES = 3;
 
-    // TODO atributos: código de seguimiento, código postal y tres paquetes
+    private String codigo;
+    private String codigoPostal;
+    private Paquete paquete1;
+    private Paquete paquete2;
+    private Paquete paquete3;
 
     /**
      * Crea un envío sin paquetes.
@@ -19,34 +25,39 @@ public class Envio {
      * @param codigoPostal código postal del destino, p.ej. "36202"
      */
     public Envio(String codigo, String codigoPostal) {
-        // TODO
+        this.codigo = codigo;
+        this.codigoPostal = codigoPostal;
     }
 
     public String getCodigo() {
-        // TODO
-        return null;
+        return codigo;
     }
 
     public String getCodigoPostal() {
-        // TODO
-        return null;
+        return codigoPostal;
     }
 
     /**
      * @return cuántos paquetes tiene el envío (0 a 3)
-     * Para mejorar el algoritmo: Los paquetes se añaden siempre en orden, así que nunca hay huecos entre ellos.
      */
     public int getNumeroPaquetes() {
-        // TODO (se calcula comprobando qué atributos d paquete son null)
-        return 0;
+        if (paquete1 == null) {
+            return 0;
+        }
+        if (paquete2 == null) {
+            return 1;
+        }
+        if (paquete3 == null) {
+            return 2;
+        }
+        return 3;
     }
 
     /**
      * @return true si ya no se pueden añadir más paquetes
      */
     public boolean estaCompleto() {
-        // TODO
-        return false;
+        return getNumeroPaquetes() == MAX_PAQUETES;
     }
 
     /**
@@ -55,7 +66,18 @@ public class Envio {
      * @return true si se ha añadido, false si el envío estaba completo
      */
     public boolean addPaquete(Paquete paquete) {
-        // TODO
+        if (paquete1 == null) {
+            paquete1 = paquete;
+            return true;
+        }
+        if (paquete2 == null) {
+            paquete2 = paquete;
+            return true;
+        }
+        if (paquete3 == null) {
+            paquete3 = paquete;
+            return true;
+        }
         return false;
     }
 
@@ -65,16 +87,25 @@ public class Envio {
      * @return true si se ha añadido, false si el envío estaba completo
      */
     public boolean addPaquete(double alto, double ancho, double largo, double peso) {
-        // TODO
-        return false;
+        return addPaquete(new Paquete(alto, ancho, largo, peso));
     }
 
     /**
      * @return la suma de los pesos reales de los paquetes (kg)
      */
     public double calcularPesoReal() {
-        // TODO
-        return 0;
+        int numero = getNumeroPaquetes();
+        double suma = 0;
+        if (numero >= 1) {
+            suma += paquete1.getPeso();
+        }
+        if (numero >= 2) {
+            suma += paquete2.getPeso();
+        }
+        if (numero >= 3) {
+            suma += paquete3.getPeso();
+        }
+        return suma;
     }
 
     /**
@@ -84,8 +115,18 @@ public class Envio {
      * @return el peso facturable del envío (kg enteros)
      */
     public double calcularPesoFacturable() {
-        // TODO
-        return 0;
+        int numero = getNumeroPaquetes();
+        double suma = 0;
+        if (numero >= 1) {
+            suma += paquete1.calcularPesoFacturable();
+        }
+        if (numero >= 2) {
+            suma += paquete2.calcularPesoFacturable();
+        }
+        if (numero >= 3) {
+            suma += paquete3.calcularPesoFacturable();
+        }
+        return Math.ceil(suma);
     }
 
     /**
@@ -93,15 +134,38 @@ public class Envio {
      * antes; null si el envío no tiene paquetes
      */
     public Paquete getPaqueteMasPesado() {
-        // TODO
-        return null;
+        int numero = getNumeroPaquetes();
+        if (numero == 0) {
+            return null;
+        }
+        Paquete masPesado = paquete1;
+        if (numero >= 2 && paquete2.getPeso() > masPesado.getPeso()) {
+            masPesado = paquete2;
+        }
+        if (numero >= 3 && paquete3.getPeso() > masPesado.getPeso()) {
+            masPesado = paquete3;
+        }
+        return masPesado;
     }
 
     /**
      * @return representación textual del envío (ver enunciado)
      */
     public String toString() {
-        // TODO
-        return "";
+        int numero = getNumeroPaquetes();
+        String texto = "Envío " + codigo + " -> CP " + codigoPostal
+                + " (" + numero + " paquete/s)\n";
+        if (numero >= 1) {
+            texto += "  1. " + paquete1 + "\n";
+        }
+        if (numero >= 2) {
+            texto += "  2. " + paquete2 + "\n";
+        }
+        if (numero >= 3) {
+            texto += "  3. " + paquete3 + "\n";
+        }
+        texto += "  Peso real: " + calcularPesoReal()
+                + " kg | Peso facturable: " + calcularPesoFacturable() + " kg";
+        return texto;
     }
 }
